@@ -12,19 +12,43 @@ namespace SHY.Classes.Rendering
     {
         //the area viewed by the camera
         public static Rectangle CameraRectangle;
+        private static Rectangle usedWindowRectangle;
 
 
         //turns a rectangle in world space into a rectangle relative to the camera
-        public static Rectangle RemapRectangle(Rectangle rectangle, Vector2 worldDimentions)
+        public static Rectangle RemapRectangle(Rectangle rectangle)
         {
             FRectangle rect = new(rectangle);
             Rectangle result = new Rectangle(
-                (int)(  (   (rect.X - CameraRectangle.X)    /   CameraRectangle.Width)  *   worldDimentions.X),
-                (int)(  (   (rect.Y - CameraRectangle.Y)    /   CameraRectangle.Height) *   worldDimentions.Y),
-                (int)(  (rect.Width / CameraRectangle.Width)    *   worldDimentions.X),
-                (int)(  (rect.Height / CameraRectangle.Height)  *   worldDimentions.Y)
+                (int)(  (   (rect.X - CameraRectangle.X)    /   CameraRectangle.Width)  *   usedWindowRectangle.Width) + usedWindowRectangle.X,
+                (int)(  (   (rect.Y - CameraRectangle.Y)    /   CameraRectangle.Height) *   usedWindowRectangle.Height) + usedWindowRectangle.Y,
+                (int)(  (rect.Width / CameraRectangle.Width)    *   usedWindowRectangle.Width),
+                (int)(  (rect.Height / CameraRectangle.Height)  *   usedWindowRectangle.Height)
             );
             return result;
+        }
+
+        //makes the camera not stretch sprites
+        public static void RecalculateIdealRatioWindowRectangle(int width, int height)
+        {
+            //the camera ratio
+            float WHRatio = (float)CameraRectangle.Width / (float)CameraRectangle.Height;
+            //the width not including the padding
+            float CameraSpaceWidth = WHRatio * height;
+            //the length from the edge of the screen to the camera border
+            float ScreenHorizontalPadding = (width - CameraSpaceWidth) * 0.5f;
+
+            //in case the window is actually taller than ideal for whatever reason
+            //indicated that the padding added to the width to make it fit the ideal camera ratio is negative
+            if(ScreenHorizontalPadding < 0)
+            {
+                //same thing but reversed for height
+                float HWRatio = (float)CameraRectangle.Height/ (float)CameraRectangle.Width;
+                float CameraSpaceHeight = HWRatio * width;
+                float ScreenVerticalPadding = (height - CameraSpaceHeight) * 0.5f;
+                usedWindowRectangle= new Rectangle(0, (int)ScreenVerticalPadding, width, (int)CameraSpaceHeight);
+            }else
+            usedWindowRectangle = new Rectangle((int)ScreenHorizontalPadding, 0, (int)CameraSpaceWidth, height);
         }
 
         //rectangle using floats to avoid silly int division situations
@@ -42,5 +66,7 @@ namespace SHY.Classes.Rendering
                 Height = r.Height;
             }
         }
+
+
     }
 }

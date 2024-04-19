@@ -28,8 +28,7 @@ namespace SHY.Classes.Rendering
                 _texture, 
                 //remap rectangle to camera
                 Camera.RemapRectangle(  
-                    new Rectangle(x, y, Width, Height),
-                    DrawObject.WindowDimentions
+                    new Rectangle(x, y, Width, Height)
                 ), 
                 Color.White
             );

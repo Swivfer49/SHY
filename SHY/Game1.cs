@@ -39,6 +39,7 @@ namespace SHY
             _resizing.Pending = true; // Mark resize as pending
             _resizing.Width = Window.ClientBounds.Width;
             _resizing.Height = Window.ClientBounds.Height;
+            Camera.RecalculateIdealRatioWindowRectangle(Window.ClientBounds.Width, Window.ClientBounds.Height);
         }
 
         protected override void Initialize()
@@ -46,6 +47,7 @@ namespace SHY
             // TODO: Add your initialization logic here
 
             Camera.CameraRectangle = new(new Point(0,0), GraphicsDevice.Viewport.Bounds.Size);
+            Camera.RecalculateIdealRatioWindowRectangle(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
 
             base.Initialize();
         }
@@ -67,7 +69,6 @@ namespace SHY
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            DrawObject.WindowDimentions = GraphicsDevice.Viewport.Bounds.Size.ToVector2();
 
             //if (Keyboard.GetState().IsKeyDown(Keys.W)) Player.Position.Y -= 1;
             //if (Keyboard.GetState().IsKeyDown(Keys.S)) Player.Position.Y += 1;
