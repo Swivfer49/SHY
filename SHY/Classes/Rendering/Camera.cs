@@ -14,6 +14,12 @@ namespace SHY.Classes.Rendering
         public static Rectangle CameraRectangle;
         private static Rectangle usedWindowRectangle;
 
+        //to center in the camera on a point
+        public static void SetCameraCenter(Point centralPoint)
+        {
+            CameraRectangle.X = (int)(centralPoint.X - CameraRectangle.Width * 0.5);
+            CameraRectangle.Y = (int)(centralPoint.Y - CameraRectangle.Height * 0.5);
+        }
 
         //turns a rectangle in world space into a rectangle relative to the camera
         public static Rectangle RemapRectangle(Rectangle rectangle)
