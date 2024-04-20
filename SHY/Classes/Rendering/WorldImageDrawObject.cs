@@ -11,15 +11,18 @@ namespace SHY.Classes.Rendering
     //this class is for drawing a regular image to the screen
     internal class WorldImageDrawObject : DrawObject
     {
-        public WorldImageDrawObject(Texture2D texture, int width, int height)
+        public WorldImageDrawObject(Texture2D texture, Rectangle rect)
         {
             _texture = texture;
-            Width = width;
-            Height = height;
+            Width = rect.Width;
+            Height = rect.Height;
+            XOff = rect.X;
+            YOff = rect.Y;
         }
 
         private Texture2D _texture;
         private int Width, Height;
+        private int XOff, YOff;
 
         public void Draw(int x, int y)
         {
@@ -28,7 +31,7 @@ namespace SHY.Classes.Rendering
                 _texture, 
                 //remap rectangle to camera
                 Camera.RemapRectangle(  
-                    new Rectangle(x, y, Width, Height)
+                    new Rectangle(x + XOff, y + YOff, Width, Height)
                 ), 
                 Color.White
             );

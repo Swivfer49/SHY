@@ -58,7 +58,7 @@ namespace SHY
             DrawObject.SpriteBatch = _spriteBatch;
 
             Texture2D bricks = Content.Load<Texture2D>("MarbleBrickTile");
-            brick = new(bricks, 160, 160);
+            brick = new(bricks, new(-80, -80, 160, 160));
 
             SpriteFont = Content.Load<SpriteFont>("Font");
 
