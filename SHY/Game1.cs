@@ -24,6 +24,10 @@ namespace SHY
 
         SpriteFont SpriteFont;
 
+        AnimatedWorldDrawObject playerAnimation;
+
+        KeyboardState PreviousState;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -49,6 +53,8 @@ namespace SHY
             Camera.CameraRectangle = new(new Point(0,0), GraphicsDevice.Viewport.Bounds.Size);
             Camera.RecalculateIdealRatioWindowRectangle(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
 
+            Camera.SetCameraCenter(new(0, 0));
+
             base.Initialize();
         }
 
@@ -63,6 +69,9 @@ namespace SHY
             SpriteFont = Content.Load<SpriteFont>("Font");
 
             // TODO: use this.Content to load your game content here
+
+            playerAnimation = new(Content.Load<Texture2D>("PlaceholderPlayer"), new(-80, -80, 160, 160),"../../../Classes/Rendering/Animations/PlayerAnimation.json");
+            playerAnimation.manager.SetCurrentAnimation("idle");
         }
 
         protected override void Update(GameTime gameTime)
@@ -80,11 +89,18 @@ namespace SHY
             //if (Keyboard.GetState().IsKeyDown(Keys.D)) DrawingTransform.XOff += 1;
             //if (Keyboard.GetState().IsKeyDown(Keys.Q)) DrawingTransform.Scale -= 0.01f;
             //if (Keyboard.GetState().IsKeyDown(Keys.E)) DrawingTransform.Scale += 0.01f;
+            
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) !& PreviousState.IsKeyDown(Keys.Space)) playerAnimation.manager.SetCurrentAnimation("attack");
+            if (Keyboard.GetState().IsKeyDown(Keys.D) !& PreviousState.IsKeyDown(Keys.D)) playerAnimation.manager.SetCurrentAnimation("walk");
+            if (Keyboard.GetState().IsKeyDown(Keys.W) !& PreviousState.IsKeyDown(Keys.W)) playerAnimation.manager.SetCurrentAnimation("idle");
 
+            playerAnimation.Update(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+
+            PreviousState = Keyboard.GetState();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -95,7 +111,11 @@ namespace SHY
 
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-            brick.Draw(0,0);
+            //_spriteBatch.DrawString(SpriteFont, playerAnimation.CurrentFrame().ToString(), new(10,10), Color.AliceBlue);
+
+            //brick.Draw(0,0);
+
+            playerAnimation.Draw(0,0);
 
             _spriteBatch.End();
 
